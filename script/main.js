@@ -1,3 +1,105 @@
+const popupLinks = document.querySelectorAll(".popup-link");
+const body = document.querySelector("body");
+const lockPadding = document.querySelectorAll(".lock-padding");
+
+let unlock = "true";
+
+const timeout = 800;
+
+if (popupLinks.length > 0) {
+  for (let i = 0; i < popupLinks.length; i++) {
+    const popupLink = popupLinks[i];
+    popupLink.addEventListener("click", function (e) {
+      const popupName = popupLink.getAttribute("href").replace("#", "");
+      const curentPopup = document.getElementById(popupName);
+      popupOpen(curentPopup);
+      e.preventDefault();
+    });
+  }
+}
+
+const popupCloseIcon = document.querySelectorAll(".close-popup");
+
+if (popupCloseIcon.length > 0) {
+  for (let i = 0; i < popupCloseIcon.length; i++) {
+    const el = popupCloseIcon[i];
+    el.addEventListener("click", function (e) {
+      popupClose(el.closest(".popup"));
+      e.preventDefault();
+    });
+  }
+}
+
+function popupOpen(curentPopup) {
+  if (curentPopup && unlock) {
+    // для доп popup (сейчас его нет)
+    const popupActive = document.querySelector(".popup.open");
+    if (popupActive) {
+      popupClose(popupActive, false);
+    } else {
+      bodyLock();
+    }
+    curentPopup.classList.add("open");
+    curentPopup.addEventListener("click", function (e) {
+      if (!e.target.closest(".popup__content")) {
+        popupClose(e.target.closest(".popup"));
+      }
+    });
+  }
+}
+
+function popupClose(popupActive, doUnlock = true) {
+  if (unlock) {
+    popupActive.classList.remove("open");
+    if (doUnlock) {
+      bodyUnlock();
+    }
+  }
+}
+function bodyLock() {
+  const lockPaddingValue =
+    window.innerWidth -
+    document.querySelector(".wrapper-popup").offsetWidth +
+    "px";
+  if (lockPadding.length > 0) {
+    for (let i = 0; i < lockPadding.length; i++) {
+      const el = lockPadding[i];
+      el.style.paddingRight = lockPaddingValue;
+    }
+  }
+  body.style.paddingRight = lockPaddingValue;
+  body.classList.add("lock");
+
+  unlock = false;
+  setTimeout(function () {
+    unlock = true;
+  }, timeout);
+}
+
+function bodyUnlock() {
+  setTimeout(function () {
+    if (lockPadding.length > 0) {
+      for (let i = 0; i < lockPadding.length; i++) {
+        const el = lockPadding[i];
+        el.style.paddingRight = "0px";
+      }
+    }
+    body.style.paddingRight = "0px";
+    body.classList.remove("lock");
+  }, 0);
+  unlock = false;
+  setTimeout(function () {
+    unlock = true;
+  }, timeout);
+}
+
+document.addEventListener("keydown", function (e) {
+  if (e.which === 27) {
+    const popupActive = document.querySelector(".popup.open");
+    popupClose(popupActive);
+  }
+});
+
 var burger = document.querySelector(".burger");
 var headerTop = document.querySelector(".header__top");
 var isMenuOpen = false;
@@ -139,20 +241,21 @@ generateReviewsSwiper();
 
 ///Скрипт плавного перехода к нужному блоку --------------------------------------------------------
 
-const anchors = document.querySelectorAll('a[href*="#"]');
+// const anchors = document.querySelectorAll('a[href*="#"]');
 
-for (let anchor of anchors) {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    const blockID = anchor.getAttribute("href");
-    const offset = parseInt(anchor.getAttribute("data-offset")) || 0; // парсим значение атрибута или задаем 0, если атрибут не задан
-    const targetElement = document.querySelector("" + blockID);
-    const targetPosition =
-      targetElement.getBoundingClientRect().top + window.pageYOffset; // вычисляем положение целевого элемента относительно верхней границы видимой области
-    const offsetPosition = targetPosition - offset; // вычисляем позицию, на которую нужно скролить
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
-  });
-}
+// for (let anchor of anchors) {
+//   anchor.addEventListener("click", function (e) {
+//     e.preventDefault();
+//     const blockID = anchor.getAttribute("href");
+//     const offset = parseInt(anchor.getAttribute("data-offset")) || 0; // парсим значение атрибута или задаем 0, если атрибут не задан
+//     const targetElement = document.querySelector(blockID.replace('#', ''));
+//     const targetPosition =
+//       targetElement.getBoundingClientRect().top + window.pageYOffset; // вычисляем положение целевого элемента относительно верхней границы видимой области
+//     const offsetPosition = targetPosition - offset; // вычисляем позицию, на которую нужно скролить
+//     window.scrollTo({
+//       top: offsetPosition,
+//       behavior: "smooth",
+//     });
+//   });
+// }
+
