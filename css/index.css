@@ -1554,6 +1554,10 @@ body.lock {
 .footer__logo {
   margin-left: 10px;
   width: 5%;
+  scroll-behavior: smooth;
+}
+.footer__logo-inner{
+  scroll-behavior: smooth;
 }
 .footer__content-politics {
   margin-top: 20px;
